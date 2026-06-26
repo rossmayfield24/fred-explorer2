@@ -7,11 +7,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --navy:    #1e2d5a;
       --navy-lt: #2a3f7e;
-      --accent:  #c8a84b;
       --bg:      #f5f6f9;
       --panel:   #ffffff;
       --border:  #dde1ea;
@@ -21,56 +19,43 @@
       --red:     #b91c1c;
       --sidebar: 288px;
     }
-
     html, body { height: 100%; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); }
-
-    /* ── App shell ── */
     .app { display: flex; flex-direction: column; height: 100vh; min-height: 0; }
 
-    /* ── Header ── */
+    /* Header */
     header {
-      background: var(--navy); color: #fff;
-      padding: 0 20px; height: 56px;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,.2); z-index: 10;
+      background: var(--navy); color: #fff; padding: 0 20px; height: 56px;
+      display: flex; align-items: center; flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2); z-index: 10; gap: 12px;
     }
-    .brand { display: flex; align-items: center; gap: 12px; }
     .brand-text { line-height: 1.25; }
     .brand-name { font-size: 16px; font-weight: 700; letter-spacing: .4px; }
-    .brand-tag  { font-size: 11px; opacity: .65; letter-spacing: .3px; }
+    .brand-tag  { font-size: 11px; opacity: .65; }
 
-    /* ── Body ── */
+    /* Body */
     .body-wrap { display: flex; flex: 1; min-height: 0; overflow: hidden; }
 
-    /* ── Sidebar ── */
+    /* Sidebar */
     aside {
-      width: var(--sidebar); flex-shrink: 0;
-      background: var(--panel); border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden;
+      width: var(--sidebar); flex-shrink: 0; background: var(--panel);
+      border-right: 1px solid var(--border); display: flex; flex-direction: column;
+      overflow-y: auto; overflow-x: hidden;
     }
     .sidebar-hd {
       padding: 14px 16px 12px; background: var(--navy); color: #fff;
-      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
-      flex-shrink: 0;
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;
     }
     .sidebar-body { padding: 14px 14px 28px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
 
-    /* ── Controls ── */
+    /* Form controls */
     .ctrl { display: flex; flex-direction: column; gap: 5px; }
-    .lbl {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .8px; color: var(--muted);
-    }
+    .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
     input[type="text"], select {
       width: 100%; border: 1px solid var(--border); border-radius: 4px;
       padding: 7px 10px; font-size: 13px; font-family: Arial, Helvetica, sans-serif;
-      color: var(--text); background: #fff; appearance: none;
-      transition: border-color .15s; outline: none;
+      color: var(--text); background: #fff; appearance: none; outline: none; transition: border-color .15s;
     }
-    input[type="text"]:focus, select:focus {
-      border-color: var(--navy-lt);
-      box-shadow: 0 0 0 2px rgba(42,63,126,.12);
-    }
+    input[type="text"]:focus, select:focus { border-color: var(--navy-lt); box-shadow: 0 0 0 2px rgba(42,63,126,.12); }
     select {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px;
@@ -80,120 +65,113 @@
     .hint { font-size: 11px; color: var(--muted); line-height: 1.5; }
     .hint a { color: var(--navy-lt); text-decoration: none; }
     .hint a:hover { text-decoration: underline; }
-    .hint code { background: var(--bg); padding: 1px 4px; border-radius: 3px; font-size: 11px; }
 
-    /* ── API key banner ── */
-    .api-banner {
-      background: #fffbe6; border: 1px solid var(--accent);
-      border-radius: 4px; padding: 10px 12px; font-size: 12px; line-height: 1.6;
+    /* API key UI */
+    .key-panel {
+      background: #fffbe6; border: 1px solid #e6c74a; border-radius: 5px;
+      padding: 11px 12px; display: flex; flex-direction: column; gap: 8px;
     }
-    .api-banner strong { color: #7a5c00; }
-    .api-banner input { margin-top: 6px; font-size: 12px; }
-    .api-save-btn {
-      margin-top: 6px; width: 100%; padding: 6px; background: var(--navy);
-      color: #fff; border: none; border-radius: 4px; font-size: 12px;
-      font-weight: 600; font-family: Arial, Helvetica, sans-serif; cursor: pointer;
+    .key-title { font-size: 12px; font-weight: 700; color: #6b4c00; }
+    .key-desc  { font-size: 11px; color: #7a5c00; line-height: 1.5; }
+    .key-desc a { color: var(--navy-lt); }
+    .key-row   { display: flex; gap: 6px; }
+    .key-row input { flex: 1; font-size: 12px; padding: 6px 8px; font-family: monospace; }
+    .key-save-btn {
+      padding: 6px 12px; background: var(--navy); color: #fff; border: none;
+      border-radius: 4px; font-size: 12px; font-weight: 700; font-family: Arial; cursor: pointer;
     }
-    .api-save-btn:hover { background: var(--navy-lt); }
-    .api-ok { display: none; align-items: center; gap: 6px; color: var(--green); font-size: 12px; font-weight: 600; }
-    .api-ok svg { flex-shrink: 0; }
+    .key-save-btn:hover { background: var(--navy-lt); }
+    .key-saved {
+      display: none; align-items: center; gap: 8px;
+      background: #f0faf4; border: 1px solid #86efac; border-radius: 5px;
+      padding: 9px 12px; font-size: 12px; color: var(--green); font-weight: 600;
+    }
+    .key-saved a { color: var(--muted); font-weight: 400; font-size: 11px; text-decoration: none; margin-left: 4px; }
+    .key-saved a:hover { text-decoration: underline; }
 
-    /* ── Popular series ── */
+    /* Popular series */
     .pop-list { display: flex; flex-direction: column; gap: 4px; }
-    .pop-list button {
+    .pop-btn {
       text-align: left; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 4px; padding: 7px 10px; font-size: 12px;
-      font-family: Arial, Helvetica, sans-serif; color: var(--navy);
-      cursor: pointer; transition: background .12s, border-color .12s; line-height: 1.35;
+      border-radius: 4px; padding: 7px 10px; font-size: 12px; font-family: Arial;
+      color: var(--navy); cursor: pointer; transition: background .12s, border-color .12s; line-height: 1.35;
     }
-    .pop-list button:hover { background: #eef1f8; border-color: var(--navy-lt); }
-    .pop-list button small { display: block; color: var(--muted); font-size: 10px; margin-top: 1px; }
+    .pop-btn:hover { background: #eef1f8; border-color: var(--navy-lt); }
+    .pop-btn small { display: block; color: var(--muted); font-size: 10px; margin-top: 1px; }
 
-    /* ── Buttons ── */
+    /* Buttons */
     .btn-primary {
-      width: 100%; padding: 11px; background: var(--navy); color: #fff;
-      border: none; border-radius: 4px; font-size: 13px; font-weight: 700;
-      font-family: Arial, Helvetica, sans-serif; cursor: pointer; letter-spacing: .4px;
-      transition: background .15s; display: flex; align-items: center; justify-content: center; gap: 7px;
+      width: 100%; padding: 11px; background: var(--navy); color: #fff; border: none;
+      border-radius: 4px; font-size: 13px; font-weight: 700; font-family: Arial; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 7px; transition: background .15s;
     }
     .btn-primary:hover { background: var(--navy-lt); }
     .btn-primary:disabled { opacity: .45; cursor: default; }
     .btn-secondary {
       width: 100%; padding: 8px; background: #fff; color: var(--navy);
       border: 1px solid var(--navy); border-radius: 4px; font-size: 12px; font-weight: 600;
-      font-family: Arial, Helvetica, sans-serif; cursor: pointer; transition: background .12s;
+      font-family: Arial; cursor: pointer; transition: background .12s;
     }
     .btn-secondary:hover { background: #eef1f8; }
     .btn-secondary:disabled { opacity: .4; cursor: default; }
     hr.div { border: none; border-top: 1px solid var(--border); }
 
-    /* ── Main area ── */
-    main {
-      flex: 1; display: flex; flex-direction: column;
-      min-width: 0; padding: 20px; gap: 14px; overflow-y: auto;
-    }
+    /* Main */
+    main { flex: 1; display: flex; flex-direction: column; min-width: 0; padding: 20px; gap: 14px; overflow-y: auto; }
 
-    /* ── State screens ── */
+    /* State screens */
     .state {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 12px; color: var(--muted); text-align: center; padding: 40px;
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 12px; color: var(--muted); text-align: center; padding: 40px;
     }
     .state .ico { font-size: 40px; opacity: .5; }
-    .state h3 { font-size: 16px; color: var(--navy); }
-    .state p { font-size: 13px; max-width: 380px; line-height: 1.6; }
+    .state h3  { font-size: 16px; color: var(--navy); }
+    .state p   { font-size: 13px; max-width: 420px; line-height: 1.6; }
     .spinner {
       width: 34px; height: 34px; border: 3px solid var(--border);
-      border-top-color: var(--navy); border-radius: 50%;
-      animation: spin .7s linear infinite;
+      border-top-color: var(--navy); border-radius: 50%; animation: spin .7s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .err-box {
-      background: #fff5f5; border: 1px solid #f5c6cb;
-      border-radius: 4px; padding: 10px 14px; font-size: 13px; color: #842029;
-      max-width: 440px; text-align: left; line-height: 1.5;
-    }
 
-    /* ── Stats bar ── */
+    /* Error box */
+    .err-box {
+      background: #fff5f5; border: 1px solid #fca5a5; border-radius: 5px;
+      padding: 14px 16px; max-width: 480px; text-align: left; line-height: 1.6;
+    }
+    .err-title { font-size: 14px; font-weight: 700; color: #991b1b; margin-bottom: 6px; }
+    .err-body  { font-size: 13px; color: #7f1d1d; }
+    .err-hint  { margin-top: 10px; font-size: 12px; color: #b45309; border-top: 1px solid #fca5a5; padding-top: 10px; }
+    .err-hint a { color: var(--navy); }
+    .err-hint code { background: #fff; padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+
+    /* Stats bar */
     .stats-bar {
-      display: flex; border: 1px solid var(--border);
-      border-radius: 6px; overflow: hidden; background: var(--panel); flex-shrink: 0;
+      display: flex; border: 1px solid var(--border); border-radius: 6px;
+      overflow: hidden; background: var(--panel); flex-shrink: 0;
     }
-    .stat {
-      flex: 1; padding: 11px 14px;
-      border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; gap: 2px;
-    }
+    .stat { flex: 1; padding: 11px 14px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
     .stat:last-child { border-right: none; }
     .stat-lbl { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); }
     .stat-val { font-size: 17px; font-weight: 700; color: var(--navy); }
     .stat-sub { font-size: 10px; color: var(--muted); }
 
-    /* ── Chart card ── */
+    /* Chart card */
     .chart-card {
-      background: var(--panel); border: 1px solid var(--border);
-      border-radius: 6px; flex: 1; min-height: 0;
-      display: flex; flex-direction: column; padding: 20px 20px 16px;
+      background: #fff; border: 1px solid var(--border); border-radius: 6px;
+      flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 20px 20px 16px;
     }
-    .chart-top {
-      display: flex; align-items: flex-start;
-      justify-content: space-between; gap: 12px; margin-bottom: 12px;
-    }
+    .chart-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
     .chart-titles { flex: 1; min-width: 0; }
     .chart-title { font-size: 16px; font-weight: 700; color: var(--navy); line-height: 1.3; }
-    .chart-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
-
-    /* Baird logo */
-    .baird-corner { flex-shrink: 0; }
-
-    .chart-wrap { position: relative; flex: 1; min-height: 280px; }
+    .chart-sub   { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .chart-wrap  { position: relative; flex: 1; min-height: 280px; }
     .chart-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
     .chart-footer {
       margin-top: 10px; font-size: 10px; color: var(--muted);
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px;
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px;
     }
 
-    /* ── Responsive ── */
+    /* Responsive */
     @media (max-width: 760px) {
       :root { --sidebar: 100%; }
       .body-wrap { flex-direction: column; }
@@ -201,74 +179,67 @@
       main { padding: 12px; }
       .stats-bar { flex-wrap: wrap; }
       .stat { min-width: 45%; }
-      .chart-title { font-size: 14px; }
-      .chart-sub { font-size: 10px; }
     }
-    @media (max-width: 420px) {
-      .stat { min-width: 100%; }
-    }
+    @media (max-width: 420px) { .stat { min-width: 100%; } }
   </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- ── Header ── -->
   <header>
-    <div class="brand">
-      <!-- Baird diagonal logo recreation -->
-      <svg width="38" height="30" viewBox="0 0 38 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="30" rx="3" fill="#2a3f7e"/>
-        <polygon points="4,26 12,4 34,4 26,26" fill="white"/>
-        <polygon points="4,26 12,4 19,4 11,26" fill="#2a3f7e"/>
-      </svg>
-      <div class="brand-text">
-        <div class="brand-name">FRED Data Explorer</div>
-        <div class="brand-tag">St. Louis Fed · Baird Research Tools</div>
-      </div>
+    <svg width="36" height="28" viewBox="0 0 36 28" fill="none">
+      <rect width="36" height="28" rx="3" fill="#2a3f7e"/>
+      <polygon points="3,24 10,4 32,4 25,24" fill="white"/>
+      <polygon points="3,24 10,4 17,4 10,24" fill="#2a3f7e"/>
+    </svg>
+    <div class="brand-text">
+      <div class="brand-name">FRED Data Explorer</div>
+      <div class="brand-tag">St. Louis Fed · Baird Research Tools</div>
     </div>
   </header>
 
   <div class="body-wrap">
-
-    <!-- ── Sidebar ── -->
     <aside>
       <div class="sidebar-hd">Chart Controls</div>
       <div class="sidebar-body">
 
         <!-- API Key -->
         <div class="ctrl">
-          <div class="lbl">FRED API Key</div>
-          <div class="api-banner" id="apiBanner">
-            <strong>Free API key required.</strong> Register in 30 seconds at
-            <a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank" rel="noopener">fred.stlouisfed.org</a>, then paste your key:
-            <input type="text" id="apiKeyInput" placeholder="32-character key" spellcheck="false" autocomplete="off" />
-            <button class="api-save-btn" onclick="saveKey()">Save Key</button>
+          <div class="lbl">Step 1 — FRED API Key</div>
+          <div class="key-panel" id="keyPanel">
+            <div class="key-title">🔑 Free API key required</div>
+            <div class="key-desc">Get yours in ~60 seconds at <a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank" rel="noopener">fred.stlouisfed.org</a>, then paste it here:</div>
+            <div class="key-row">
+              <input type="text" id="keyInput" placeholder="32-character key…" spellcheck="false" autocomplete="off" />
+              <button class="key-save-btn" onclick="saveKey()">Save</button>
+            </div>
           </div>
-          <div class="api-ok" id="apiOk">
+          <div class="key-saved" id="keySaved">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#1e6b3a" stroke-width="1.5"/><path d="M4 7l2 2 4-4" stroke="#1e6b3a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            API key saved · <a href="#" onclick="resetKey(event)" style="color:var(--navy-lt);font-size:11px;font-weight:400">change</a>
+            API key saved
+            <a href="#" id="changeKeyLink">change</a>
           </div>
         </div>
 
         <!-- Series ID -->
         <div class="ctrl">
-          <label class="lbl" for="seriesId">FRED Series ID</label>
+          <div class="lbl">Step 2 — Series ID</div>
           <input type="text" id="seriesId" placeholder="e.g. UNRATE, GDP, CPIAUCSL" spellcheck="false" autocomplete="off" />
-          <div class="hint">Browse series at <a href="https://fred.stlouisfed.org" target="_blank" rel="noopener">fred.stlouisfed.org</a> and copy the ID from the URL.</div>
+          <div class="hint">Find any series at <a href="https://fred.stlouisfed.org" target="_blank" rel="noopener">fred.stlouisfed.org</a> — the ID is in the URL.</div>
         </div>
 
         <!-- Popular -->
         <div class="ctrl">
           <div class="lbl">Popular Series</div>
           <div class="pop-list">
-            <button onclick="pick('UNRATE')">Unemployment Rate <small>UNRATE · Monthly</small></button>
-            <button onclick="pick('GDP')">Gross Domestic Product <small>GDP · Quarterly</small></button>
-            <button onclick="pick('CPIAUCSL')">CPI — All Urban Consumers <small>CPIAUCSL · Monthly</small></button>
-            <button onclick="pick('FEDFUNDS')">Federal Funds Rate <small>FEDFUNDS · Monthly</small></button>
-            <button onclick="pick('T10Y2Y')">10Y–2Y Treasury Spread <small>T10Y2Y · Daily</small></button>
-            <button onclick="pick('HOUST')">Housing Starts <small>HOUST · Monthly</small></button>
-            <button onclick="pick('SP500')">S&amp;P 500 Index <small>SP500 · Daily</small></button>
-            <button onclick="pick('DEXUSEU')">USD / EUR Exchange Rate <small>DEXUSEU · Daily</small></button>
+            <button class="pop-btn" onclick="pick('UNRATE')">Unemployment Rate<small>UNRATE · Monthly</small></button>
+            <button class="pop-btn" onclick="pick('GDP')">Gross Domestic Product<small>GDP · Quarterly</small></button>
+            <button class="pop-btn" onclick="pick('CPIAUCSL')">CPI — All Urban Consumers<small>CPIAUCSL · Monthly</small></button>
+            <button class="pop-btn" onclick="pick('FEDFUNDS')">Federal Funds Rate<small>FEDFUNDS · Monthly</small></button>
+            <button class="pop-btn" onclick="pick('T10Y2Y')">10Y–2Y Treasury Spread<small>T10Y2Y · Daily</small></button>
+            <button class="pop-btn" onclick="pick('HOUST')">Housing Starts<small>HOUST · Monthly</small></button>
+            <button class="pop-btn" onclick="pick('SP500')">S&amp;P 500 Index<small>SP500 · Daily</small></button>
+            <button class="pop-btn" onclick="pick('DEXUSEU')">USD / EUR Exchange Rate<small>DEXUSEU · Daily</small></button>
           </div>
         </div>
 
@@ -305,9 +276,9 @@
           </select>
         </div>
 
-        <!-- Aggregation (hidden when no freq) -->
+        <!-- Aggregation -->
         <div class="ctrl" id="aggCtrl" style="display:none">
-          <label class="lbl" for="agg">Aggregation</label>
+          <label class="lbl" for="agg">Aggregation Method</label>
           <select id="agg">
             <option value="avg">Average</option>
             <option value="sum">Sum</option>
@@ -332,7 +303,7 @@
 
         <hr class="div" />
 
-        <!-- Chart type -->
+        <!-- Chart style -->
         <div class="ctrl">
           <label class="lbl" for="chartType">Chart Style</label>
           <select id="chartType">
@@ -341,7 +312,6 @@
           </select>
         </div>
 
-        <!-- Plot button -->
         <button class="btn-primary" id="plotBtn" onclick="run()">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
             <path d="M1 12L4.5 7l3 3L11 4l2 2" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -349,123 +319,183 @@
           Plot Chart
         </button>
 
-        <!-- Download -->
         <button class="btn-secondary" id="dlBtn" onclick="dlCSV()" disabled>⬇ Download CSV</button>
 
       </div>
     </aside>
 
-    <!-- ── Main ── -->
     <main id="main">
-      <div class="state" id="welcome">
+      <div class="state">
         <div class="ico">📈</div>
         <h3>FRED Data Explorer</h3>
-        <p>Enter your free FRED API key, choose a series ID or pick from the popular list, then click <strong>Plot Chart</strong>.</p>
+        <p>Enter your free FRED API key in Step 1, then click any popular series or type a Series ID to get started.</p>
       </div>
     </main>
-
   </div>
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-// State
-// ─────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────────────────
 let chartInst = null;
 let csvData   = null;
 let csvMeta   = null;
 
-// ─────────────────────────────────────────────
-// API Key persistence
-// ─────────────────────────────────────────────
+// ── API Key ───────────────────────────────────────────────────────────────────
 function getKey() {
-  try { return sessionStorage.getItem('fredKey') || ''; } catch(e) { return ''; }
+  try { return sessionStorage.getItem('fredApiKey') || ''; } catch(e) { return ''; }
 }
 function saveKey() {
-  const k = document.getElementById('apiKeyInput').value.trim();
-  if (!k) return;
-  try { sessionStorage.setItem('fredKey', k); } catch(e) {}
-  showKeyOk();
+  const k = document.getElementById('keyInput').value.trim();
+  if (k.length < 20) {
+    alert('That doesn\'t look like a valid FRED API key (should be 32 characters). Please check and try again.');
+    return;
+  }
+  try { sessionStorage.setItem('fredApiKey', k); } catch(e) {}
+  updateKeyUI();
 }
-function resetKey(e) {
+function changeKey(e) {
   e && e.preventDefault();
-  try { sessionStorage.removeItem('fredKey'); } catch(e) {}
-  document.getElementById('apiBanner').style.display = '';
-  document.getElementById('apiOk').style.display    = 'none';
-  document.getElementById('apiKeyInput').value = '';
+  try { sessionStorage.removeItem('fredApiKey'); } catch(e) {}
+  document.getElementById('keyInput').value = '';
+  updateKeyUI();
 }
-function showKeyOk() {
-  document.getElementById('apiBanner').style.display = 'none';
-  document.getElementById('apiOk').style.display    = 'flex';
+function updateKeyUI() {
+  const has = !!getKey();
+  document.getElementById('keyPanel').style.display = has ? 'none' : '';
+  document.getElementById('keySaved').style.display = has ? 'flex' : 'none';
 }
 
-// Init key state
+// ── Init ──────────────────────────────────────────────────────────────────────
 (function() {
-  const k = getKey();
-  if (k) showKeyOk();
-  document.getElementById('apiKeyInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
+  updateKeyUI();
+  document.getElementById('keyInput').addEventListener('keydown',  e => { if (e.key === 'Enter') saveKey(); });
+  document.getElementById('seriesId').addEventListener('keydown',  e => { if (e.key === 'Enter') run(); });
+  document.getElementById('changeKeyLink').addEventListener('click', changeKey);
 })();
 
-// ─────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────
-function pick(id) {
-  document.getElementById('seriesId').value = id;
-  run();
-}
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function pick(id) { document.getElementById('seriesId').value = id; run(); }
 function toggleAgg() {
-  document.getElementById('aggCtrl').style.display =
-    document.getElementById('freq').value ? '' : 'none';
+  document.getElementById('aggCtrl').style.display = document.getElementById('freq').value ? '' : 'none';
 }
 
-// ─────────────────────────────────────────────
-// FRED API fetch
-// ─────────────────────────────────────────────
+// ── FRED fetch via CORS proxy ─────────────────────────────────────────────────
+// The FRED API blocks direct browser requests (no CORS headers).
+// We route through allorigins.win, a free open-source CORS relay.
+// The actual FRED URL (with API key) is passed as an encoded parameter.
 async function fredFetch(path, params) {
   const key = getKey();
-  if (!key) throw new Error('No API key set — please enter your FRED API key in the sidebar.');
-  const url = new URL('https://api.stlouisfed.org/fred/' + path);
-  url.searchParams.set('api_key', key);
-  url.searchParams.set('file_type', 'json');
+  if (!key) throw { code: 'NO_KEY' };
+
+  // Build the real FRED URL
+  const fredUrl = new URL('https://api.stlouisfed.org/fred/' + path);
+  fredUrl.searchParams.set('api_key', key);
+  fredUrl.searchParams.set('file_type', 'json');
   for (const [k, v] of Object.entries(params)) {
-    if (v !== undefined && v !== '') url.searchParams.set(k, v);
+    if (v !== undefined && v !== '') fredUrl.searchParams.set(k, v);
   }
-  const res = await fetch(url.toString());
-  const json = await res.json();
-  if (json.error_code) throw new Error('FRED: ' + (json.error_message || 'Unknown error'));
-  if (!res.ok) throw new Error('HTTP ' + res.status);
+
+  // Wrap in allorigins proxy
+  const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(fredUrl.toString());
+
+  let res, wrapper;
+  try {
+    res     = await fetch(proxyUrl);
+    wrapper = await res.json();
+  } catch(e) {
+    throw { code: 'NETWORK', detail: e.message };
+  }
+
+  if (!wrapper || !wrapper.contents) {
+    throw { code: 'PROXY_EMPTY' };
+  }
+
+  let json;
+  try {
+    json = JSON.parse(wrapper.contents);
+  } catch(e) {
+    throw { code: 'PARSE_ERR', detail: wrapper.contents.substring(0, 200) };
+  }
+
+  if (json.error_code) {
+    throw { code: 'FRED_ERR', detail: json.error_message || 'Unknown FRED error' };
+  }
+
   return json;
 }
 
-// ─────────────────────────────────────────────
-// UI state helpers
-// ─────────────────────────────────────────────
+// ── UI helpers ────────────────────────────────────────────────────────────────
 function setMain(html) { document.getElementById('main').innerHTML = html; }
 
 function showLoading() {
   setMain(`<div class="state">
     <div class="spinner"></div>
     <h3>Fetching from FRED…</h3>
-    <p>Contacting the St. Louis Fed API</p>
+    <p>Retrieving data from the St. Louis Fed</p>
   </div>`);
 }
 
-function showError(msg) {
+function showError(err) {
+  let title, body, hint = '';
+
+  switch(err.code) {
+    case 'NO_KEY':
+      title = 'API key required';
+      body  = 'Please enter your FRED API key in Step 1 before plotting a chart.';
+      hint  = 'Get a free key at <a href="https://fred.stlouisfed.org/docs/api/api_key.html" target="_blank" rel="noopener">fred.stlouisfed.org/docs/api/api_key.html</a> — takes about 60 seconds.';
+      // Also focus the key input
+      setTimeout(() => document.getElementById('keyInput').focus(), 100);
+      break;
+    case 'NETWORK':
+      title = 'Network error';
+      body  = 'Could not connect to the data proxy. Check your internet connection and try again.';
+      hint  = 'Detail: ' + (err.detail || 'unknown');
+      break;
+    case 'PROXY_EMPTY':
+      title = 'Proxy returned no data';
+      body  = 'The CORS proxy (allorigins.win) returned an empty response. This is usually temporary — wait a few seconds and try again.';
+      break;
+    case 'PARSE_ERR':
+      title = 'Unexpected response format';
+      body  = 'Could not parse the FRED response.';
+      hint  = 'Raw response: ' + escHtml(err.detail || '');
+      break;
+    case 'FRED_ERR':
+      title = 'FRED API error';
+      body  = escHtml(err.detail || 'Unknown error from FRED.');
+      hint  = 'Common causes: invalid API key, or the series ID does not exist. Double-check both.';
+      break;
+    case 'BAD_SERIES':
+      title = 'Series not found';
+      body  = 'The series ID <code>' + escHtml(err.detail) + '</code> was not found on FRED.';
+      hint  = 'Try: <code>UNRATE</code> · <code>GDP</code> · <code>CPIAUCSL</code> · <code>FEDFUNDS</code>';
+      break;
+    case 'NO_DATA':
+      title = 'No data returned';
+      body  = 'FRED returned no observations for these settings.';
+      hint  = 'Try widening the date range or changing the frequency.';
+      break;
+    default:
+      title = 'Something went wrong';
+      body  = escHtml(err.detail || err.code || 'Unknown error');
+  }
+
   setMain(`<div class="state">
     <div class="ico">⚠️</div>
     <h3>Could not load data</h3>
-    <div class="err-box">${escHtml(msg)}</div>
-    <p style="font-size:12px;margin-top:4px">Common IDs: <code>UNRATE</code> &nbsp; <code>GDP</code> &nbsp; <code>CPIAUCSL</code> &nbsp; <code>FEDFUNDS</code></p>
+    <div class="err-box">
+      <div class="err-title">${title}</div>
+      <div class="err-body">${body}</div>
+      ${hint ? `<div class="err-hint">${hint}</div>` : ''}
+    </div>
   </div>`);
 }
 
 function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ─────────────────────────────────────────────
-// Number format
-// ─────────────────────────────────────────────
+// ── Number format ─────────────────────────────────────────────────────────────
 function fmt(v) {
   if (v === null || v === undefined || isNaN(v)) return '—';
   const a = Math.abs(v);
@@ -481,14 +511,11 @@ function unitsLabel(code, native) {
   return ({
     lin:'Levels', chg:'Change', ch1:'Change from Year Ago',
     pch:'% Change', pc1:'% Change from Year Ago',
-    pca:'Ann. Rate of Chg.', cch:'Cont. Compounded Rate',
-    cca:'Cont. Compounded Ann. Rate', log:'Natural Log',
+    pca:'Ann. Rate of Chg.', cch:'Cont. Comp. Rate',
+    cca:'Cont. Comp. Ann. Rate', log:'Natural Log',
   }[code]) || native || 'Levels';
 }
 
-// ─────────────────────────────────────────────
-// Baird logo SVG for chart corner
-// ─────────────────────────────────────────────
 function bairdSVG() {
   return `<svg width="70" height="24" viewBox="0 0 70 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <rect width="70" height="24" rx="3" fill="#1e2d5a"/>
@@ -498,10 +525,10 @@ function bairdSVG() {
   </svg>`;
 }
 
-// ─────────────────────────────────────────────
-// Main: fetch + draw
-// ─────────────────────────────────────────────
+// ── Main run ──────────────────────────────────────────────────────────────────
 async function run() {
+  if (!getKey()) { showError({ code: 'NO_KEY' }); return; }
+
   const id        = document.getElementById('seriesId').value.trim().toUpperCase();
   const units     = document.getElementById('units').value;
   const freq      = document.getElementById('freq').value;
@@ -510,59 +537,60 @@ async function run() {
   const endDate   = document.getElementById('endDate').value.trim();
   const chartType = document.getElementById('chartType').value;
 
-  if (!id) { showError('Enter a FRED Series ID first (e.g. UNRATE).'); return; }
+  if (!id) { showError({ code: 'BAD_SERIES', detail: '(empty)' }); return; }
 
   document.getElementById('plotBtn').disabled = true;
   document.getElementById('dlBtn').disabled   = true;
   showLoading();
 
   try {
-    // Metadata
+    // 1. Series metadata
     const meta = await fredFetch('series', { series_id: id });
     const info  = meta.seriess?.[0];
-    if (!info) throw new Error('Series not found: ' + id + '. Check the ID at fred.stlouisfed.org');
+    if (!info) throw { code: 'BAD_SERIES', detail: id };
 
-    // Observations
+    // 2. Observations
     const p = { series_id: id, units };
     if (startDate) p.observation_start = startDate;
     if (endDate)   p.observation_end   = endDate;
     if (freq)      { p.frequency = freq; p.aggregation_method = agg; }
 
-    const obs = await fredFetch('series/observations', p);
-    const data = (obs.observations || []).filter(o => o.value !== '.' && o.value !== 'NaN');
+    const obs  = await fredFetch('series/observations', p);
+    const data = (obs.observations || []).filter(o => {
+      const v = parseFloat(o.value);
+      return o.value !== '.' && o.value !== '' && !isNaN(v);
+    });
 
-    if (!data.length) throw new Error('No observations returned. Try different date range or frequency settings.');
+    if (!data.length) throw { code: 'NO_DATA' };
 
     csvData = data;
     csvMeta = info;
-
     drawChart(data, info, units, chartType);
 
   } catch(err) {
-    showError(err.message);
+    // If it's a plain Error object (unexpected), wrap it
+    if (err instanceof Error) showError({ code: 'UNKNOWN', detail: err.message });
+    else showError(err);
   } finally {
     document.getElementById('plotBtn').disabled = false;
   }
 }
 
-// ─────────────────────────────────────────────
-// Draw
-// ─────────────────────────────────────────────
+// ── Draw ──────────────────────────────────────────────────────────────────────
 function drawChart(data, info, units, type) {
   if (chartInst) { chartInst.destroy(); chartInst = null; }
 
   const labels = data.map(d => d.date);
   const vals   = data.map(d => parseFloat(d.value));
-
   const latest = vals[vals.length - 1];
   const first  = vals[0];
   const hi     = Math.max(...vals);
   const lo     = Math.min(...vals);
   const chg    = latest - first;
-  const chgPct = first !== 0 ? ((chg / Math.abs(first)) * 100).toFixed(2) : '—';
+  const chgPct = first !== 0 ? ((chg / Math.abs(first)) * 100).toFixed(2) : null;
   const pos    = chg >= 0;
 
-  // Thin for large series
+  // Thin large series for performance
   const MAX = 1200;
   let lbls = labels, vs = vals;
   if (labels.length > MAX) {
@@ -571,31 +599,33 @@ function drawChart(data, info, units, type) {
     vs   = vals.filter((_, i) => i % step === 0);
   }
 
-  const freqTxt = document.getElementById('freq').selectedOptions[0].text;
+  const freqEl  = document.getElementById('freq');
+  const freqTxt = freqEl.value ? freqEl.selectedOptions[0].text : info.frequency;
   const uLabel  = unitsLabel(units, info.units);
-  const showFreq = freqTxt !== 'Default (native)' ? freqTxt : info.frequency;
 
   document.getElementById('main').innerHTML = `
     <div class="stats-bar">
       <div class="stat">
-        <div class="stat-lbl">Latest</div>
+        <div class="stat-lbl">Latest Value</div>
         <div class="stat-val">${fmt(latest)}</div>
         <div class="stat-sub">${data[data.length-1].date}</div>
       </div>
       <div class="stat">
         <div class="stat-lbl">Period High</div>
         <div class="stat-val">${fmt(hi)}</div>
-        <div class="stat-sub">max</div>
+        <div class="stat-sub">max in range</div>
       </div>
       <div class="stat">
         <div class="stat-lbl">Period Low</div>
         <div class="stat-val">${fmt(lo)}</div>
-        <div class="stat-sub">min</div>
+        <div class="stat-sub">min in range</div>
       </div>
       <div class="stat">
-        <div class="stat-lbl">Change vs Start</div>
-        <div class="stat-val" style="color:${pos?'var(--green)':'var(--red)'}">${pos?'+':''}${fmt(chg)}</div>
-        <div class="stat-sub">${chgPct !== '—' ? chgPct+'% total' : ''}</div>
+        <div class="stat-lbl">Total Change</div>
+        <div class="stat-val" style="color:${pos?'var(--green)':'var(--red)'}">
+          ${pos?'+':''}${fmt(chg)}
+        </div>
+        <div class="stat-sub">${chgPct !== null ? chgPct + '% vs start' : ''}</div>
       </div>
       <div class="stat">
         <div class="stat-lbl">Observations</div>
@@ -608,104 +638,73 @@ function drawChart(data, info, units, type) {
       <div class="chart-top">
         <div class="chart-titles">
           <div class="chart-title">${escHtml(info.title)}</div>
-          <div class="chart-sub">${info.id} &nbsp;·&nbsp; ${uLabel} &nbsp;·&nbsp; ${showFreq} &nbsp;·&nbsp; ${info.seasonal_adjustment_short || ''}</div>
+          <div class="chart-sub">${escHtml(info.id)} &nbsp;·&nbsp; ${escHtml(uLabel)} &nbsp;·&nbsp; ${escHtml(freqTxt)} &nbsp;·&nbsp; ${escHtml(info.seasonal_adjustment_short||'')}</div>
         </div>
-        <div class="baird-corner">${bairdSVG()}</div>
+        <div>${bairdSVG()}</div>
       </div>
-      <div class="chart-wrap">
-        <canvas id="c"></canvas>
-      </div>
+      <div class="chart-wrap"><canvas id="chartCanvas"></canvas></div>
       <div class="chart-footer">
-        <span>Source: Federal Reserve Bank of St. Louis (FRED) &nbsp;·&nbsp; Series: ${info.id}</span>
-        <span>Updated: ${(info.last_updated||'').substring(0,10)}</span>
+        <span>Source: Federal Reserve Bank of St. Louis (FRED) · Series: ${escHtml(info.id)}</span>
+        <span>Last updated: ${(info.last_updated||'').substring(0,10)||'—'}</span>
       </div>
     </div>`;
 
   document.getElementById('dlBtn').disabled = false;
 
   const isBar = type === 'bar';
-  const ctx   = document.getElementById('c').getContext('2d');
-
-  chartInst = new Chart(ctx, {
+  chartInst = new Chart(document.getElementById('chartCanvas').getContext('2d'), {
     type: isBar ? 'bar' : 'line',
     data: {
       labels: lbls,
       datasets: [{
-        label: info.title,
-        data: vs,
+        label: info.title, data: vs,
         borderColor: '#1e2d5a',
-        backgroundColor: isBar ? 'rgba(30,45,90,0.78)' : 'rgba(30,45,90,0.07)',
+        backgroundColor: isBar ? 'rgba(30,45,90,0.80)' : 'rgba(30,45,90,0.07)',
         borderWidth: isBar ? 0 : 1.8,
-        pointRadius: 0,
-        pointHoverRadius: 5,
+        pointRadius: 0, pointHoverRadius: 5,
         pointHoverBackgroundColor: '#1e2d5a',
-        tension: 0.25,
-        fill: !isBar,
-        borderRadius: isBar ? 2 : 0,
+        tension: 0.25, fill: !isBar, borderRadius: isBar ? 2 : 0,
       }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 300 },
+      responsive: true, maintainAspectRatio: false, animation: { duration: 300 },
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#fff',
-          titleColor: '#1a1f2e',
-          bodyColor: '#1e2d5a',
-          borderColor: '#dde1ea',
-          borderWidth: 1,
-          padding: 10,
+          backgroundColor: '#fff', titleColor: '#6b7280', bodyColor: '#1e2d5a',
+          borderColor: '#dde1ea', borderWidth: 1, padding: 10,
           titleFont: { family: 'Arial', size: 11, weight: '400' },
           bodyFont:  { family: 'Arial', size: 13, weight: '700' },
           callbacks: {
             title: items => items[0].label,
-            label: item  => `${fmt(item.raw)}  ${info.units_short || ''}`,
+            label: item  => `${fmt(item.raw)}  ${info.units_short||''}`,
           }
         },
       },
       scales: {
         x: {
-          ticks: {
-            font: { family: 'Arial', size: 10 }, color: '#6b7280',
-            maxTicksLimit: 9, maxRotation: 0,
-          },
-          grid: { color: '#f0f1f5' },
-          border: { color: '#dde1ea' },
+          ticks: { font: { family: 'Arial', size: 10 }, color: '#6b7280', maxTicksLimit: 9, maxRotation: 0 },
+          grid: { color: '#f0f1f5' }, border: { color: '#dde1ea' },
         },
         y: {
-          ticks: {
-            font: { family: 'Arial', size: 10 }, color: '#6b7280',
-            callback: v => fmt(v),
-          },
-          grid: { color: '#f0f1f5' },
-          border: { color: '#dde1ea' },
+          ticks: { font: { family: 'Arial', size: 10 }, color: '#6b7280', callback: v => fmt(v) },
+          grid: { color: '#f0f1f5' }, border: { color: '#dde1ea' },
         }
       }
     }
   });
 }
 
-// ─────────────────────────────────────────────
-// CSV download
-// ─────────────────────────────────────────────
+// ── CSV download ──────────────────────────────────────────────────────────────
 function dlCSV() {
   if (!csvData || !csvMeta) return;
   const rows = ['Date,Value', ...csvData.map(d => `${d.date},${d.value}`)];
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([rows.join('\n')], {type:'text/csv'}));
+  a.href = URL.createObjectURL(new Blob([rows.join('\n')], { type: 'text/csv' }));
   a.download = `FRED_${csvMeta.id}_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
 }
-
-// ─────────────────────────────────────────────
-// Enter key
-// ─────────────────────────────────────────────
-document.getElementById('seriesId').addEventListener('keydown', e => {
-  if (e.key === 'Enter') run();
-});
 </script>
 </body>
 </html>
